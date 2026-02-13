@@ -5,7 +5,7 @@ import axios from "axios";
 
 function Todolist() {
   const token = useUserStore((state) => state.token)
-   console.log(token)
+   console.log(token) 
 
  useEffect(() => console.log('token', token, [token]))
   
@@ -25,17 +25,15 @@ function Todolist() {
         }
 
       })
-
-
+     
       setTodo(res.data)
       console.log("res", res.data)
     } catch (error) {
       console.log(error)
     }
   }
+
       
-      
-console.log(todo)
   return (
     <div className=" bg-red-500 p-2 flex justify-center items-center flex-col">
       <h1 className="text-black flex justify-center text-center  text-3xl font-semibold">
@@ -51,18 +49,22 @@ console.log(todo)
         </button>
         </form>
        
-      
-      
       </div>
+
+      <div className=" p-3 flex justify-center items-center flex-col "> 
       {todo.map((item)=>(
-        <div 
-        className=" p-1 flex justify-center items-center" 
-        key={item.id}>{item.content}
+        <div>
+        <input type="checkbox"></input> 
+        <label key={item.id}>{item.content}</label>
         <button className="bg-amber-300  m-1 border p-0.5 px-2 rounded-md cursor-pointer hover:bg-rose-400 transition-all duration-150">Edit</button>
+        
         </div>
+  
       ))}
     </div>
+    </div>
   );
+
 }
 
 export default Todolist;

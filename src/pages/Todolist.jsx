@@ -1,70 +1,93 @@
 import React from "react";
 import useUserStore from "../Stores/useStore";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 function Todolist() {
-  const token = useUserStore((state) => state.token)
-   console.log(token) 
+  const token = useUserStore((state) => state.token);
+  console.log(token);
 
- useEffect(() => console.log('token', token, [token]))
-  
-  const [todo,setTodo] = useState([])
-  
+  useEffect(() => console.log("token", token, [token]));
+
+  const [todo, setTodo] = useState([]);
+
   useEffect(() => {
     if (token) {
-      fetchUser()
+      fetchUser();
     }
-  }, [])
+  }, []);
   async function fetchUser() {
     try {
-      const res = await axios.get("https://drive-accessible-pictures-send.trycloudflare.com/todosv2",{
-        
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+      const res = await axios.get(
+        "https://drive-accessible-pictures-send.trycloudflare.com/todosv2",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
-      })
-     
-      setTodo(res.data)
-      console.log("res", res.data)
+      setTodo(res.data);
+      console.log("res", res.data);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
-      
+  const [add, setAdd] = useState("");
+
+  const hdlAdd = async (evt) => {
+    evt.preventDefault();
+    const resp = await axios.post(
+      "https://drive-accessible-pictures-send.trycloudflare.com/todosv2",
+      add,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    console.log(resp.data);
+  };
+
+  const hdlAddList = (evt) => {
+    const { value } = evt.target;
+    setAdd({ content: value });
+    console.log(value);
+  };
+
   return (
     <div className=" bg-red-500 p-2 flex justify-center items-center flex-col">
       <h1 className="text-black flex justify-center text-center  text-3xl font-semibold">
         ToDoList
       </h1>
       <div className="bg-white rounded-md ">
-
-      <form>
-      <input className="border p-0.5 px-2 border-gray-500 rounded-md" id="task" placeholder="Add your text" />
-      <button 
-      className="bg-amber-300 border p-0.5 px-2 rounded-md cursor-pointer hover:bg-rose-400 transition-all duration-150">
-          Add
-        </button>
+        <form onSubmit={hdlAdd}>
+          <input
+            onChange={hdlAddList}
+            className="border p-0.5 px-2 border-gray-500 rounded-md"
+            id="task"
+            placeholder="Add your text"
+          />
+          <button className="bg-amber-300 border p-0.5 px-2 rounded-md cursor-pointer hover:bg-rose-400 transition-all duration-150">
+            Add
+          </button>
         </form>
-       
       </div>
 
-      <div className=" p-3 flex justify-center items-center flex-col "> 
-      {todo.map((item)=>(
-        <div>
-        <input type="checkbox"></input> 
-        <label key={item.id}>{item.content}</label>
-        <button className="bg-amber-300  m-1 border p-0.5 px-2 rounded-md cursor-pointer hover:bg-rose-400 transition-all duration-150">Edit</button>
-        
-        </div>
-  
-      ))}
-    </div>
+      <div className=" p-3 flex justify-center items-center flex-col ">
+        {todo.map((item) => (
+          <div>
+            <input type="checkbox"></input>
+            <label key={item.id}>{item.content}</label>
+            <button className="bg-amber-300  m-1 border p-0.5 px-2 rounded-md cursor-pointer hover:bg-rose-400 transition-all duration-150">
+              Edit
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
-
 }
 
 export default Todolist;
